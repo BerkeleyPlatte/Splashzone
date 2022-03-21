@@ -58,3 +58,20 @@ class NewsPost(SiteModel):
         if text_value:
             results = results.filter(Q(body__icontains=text_value) | Q(title__icontains=text_value))
         return set(results.all())
+    
+class WhatWeAreReadingLink(SiteModel):
+    title = models.CharField(max_length=300)
+    source = models.CharField(max_length=300)
+    link = models.URLField()
+    publish_date = models.DateField(default=timezone.now)
+
+    def __str__(self):
+        return '<{}> {}'.format(self.site.domain, self.title)
+
+    @property
+    def url(self):
+        return reverse('whatwearereadinglink_detail', kwargs={'whatwearereadinglink_id': self.pk})
+
+    @property
+    def source_divesite(self):
+        return self.site.name
